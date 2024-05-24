@@ -1,6 +1,6 @@
+import re
 import streamlit as st
 from fuzzywuzzy import fuzz, process
-
 
 # Preprocess a single string by removing noise and normalizing
 def preprocess_string(s):
@@ -19,11 +19,9 @@ def preprocess_string(s):
 # Find the best match for a given user input from the database names
 def find_best_match(user_input, database_names):
     processed_input = preprocess_string(user_input)  # Preprocess the user input
-    processed_database = [preprocess_string(name.replace('_', ' ')) for name in
-                          database_names]  # Preprocess database names
+    processed_database = [preprocess_string(name.replace('_', ' ')) for name in database_names]  # Preprocess database names
 
-    best_match_token_set, score_token_set = process.extractOne(processed_input, processed_database,
-                                                               scorer=fuzz.token_set_ratio)
+    best_match_token_set, score_token_set = process.extractOne(processed_input, processed_database, scorer=fuzz.token_set_ratio)
     best_match_ratio, score_ratio = process.extractOne(processed_input, processed_database, scorer=fuzz.ratio)
 
     if score_token_set > score_ratio:
@@ -37,11 +35,10 @@ def find_best_match(user_input, database_names):
 
     return original_name, score
 
-
 # Main function to handle user inputs and find best matches
 def main():
     st.title("Vehicle Model Name Matcher")
-
+    
     database_names = [
         "ford_aspire", "ford_ecosport", "ford_endeavour", "ford_figo",
         "honda_amaze", "honda_city", "honda_wr_v", "hyundai_aura",
@@ -68,7 +65,6 @@ def main():
             best_match, confidence = find_best_match(user_input, database_names)
             st.write(f"User Input: {user_input}")
             st.write(f"Best Match: {best_match} - Confidence: {confidence:.2f}%")
-
 
 if __name__ == "__main__":
     main()
